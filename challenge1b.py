@@ -31,9 +31,11 @@ except Exception:
 
 # ---- Safe allowlist for PyTorch ≥2.6 checkpoint unpickling
 import argparse, numpy as np
-from torch.serialization import add_safe_globals, safe_globals
 try:
-    add_safe_globals([argparse.Namespace, np.core.multiarray.scalar])
+    import torch
+    ser = getattr(torch, "serialization", None)
+    if ser and hasattr(ser, "add_safe_globals"):
+        ser.add_safe_globals([argparse.Namespace, np.core.multiarray.scalar])
 except Exception:
     pass
 
